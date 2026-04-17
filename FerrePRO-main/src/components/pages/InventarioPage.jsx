@@ -169,49 +169,36 @@ function MetricCard({ label, value, accent, badge, badgeStyle }) {
 // ─── ProductRow ────────────────────────────────────────────────────────────────
 function ProductRow({ product, onEdit, onDelete }) {
   return (
-    <tr className="group hover:bg-zinc-50 transition-colors duration-150">
-      {/* Imagen */}
-      <td className="py-4 px-6">
-        <div className={`w-12 h-12 rounded-lg bg-zinc-100 overflow-hidden border border-zinc-200 ${product.outOfStock ? "grayscale opacity-60" : ""}`}>
-          <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
-        </div>
-      </td>
-      {/* Nombre + SKU */}
-      <td className="py-4 px-6">
-        <div className="flex flex-col">
-          <span className="text-sm font-bold text-zinc-900">{product.name}</span>
-          <span className="text-xs text-zinc-500">SKU: {product.sku}</span>
-        </div>
-      </td>
-      {/* Categoría */}
-      <td className="py-4 px-6">
-        <span className="text-[10px] px-2.5 py-1 bg-orange-50 text-orange-600 font-bold rounded-full uppercase">
-          {product.category}
-        </span>
-      </td>
-      {/* Stock + barra */}
-      <td className="py-4 px-6">
-        <div className="flex items-center gap-2">
-          <span className={`text-sm font-medium ${product.stockColor}`}>{product.stockLabel}</span>
-          <div className={`w-12 h-1.5 rounded-full overflow-hidden ${product.outOfStock ? "bg-red-100" : "bg-zinc-100"}`}>
-            <div className={`h-full ${product.barColor}`} style={{ width: product.barWidth }} />
-          </div>
-        </div>
-      </td>
-      {/* Precio */}
-      <td className="py-4 px-6 font-bold text-sm">{product.price}</td>
-      {/* Acciones */}
-      <td className="py-4 px-6 text-right">
-        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={() => onEdit(product)} className="p-1.5 rounded-md hover:bg-zinc-100 text-zinc-500 transition-colors">
-            <span className="material-symbols-outlined text-[18px]">edit</span>
-          </button>
-          <button onClick={() => onDelete(product.id)} className="p-1.5 rounded-md hover:bg-red-50 text-red-600 transition-colors">
-            <span className="material-symbols-outlined text-[18px]">delete</span>
-          </button>
-        </div>
-      </td>
-    </tr>
+    <tr className="align-middle">
+  <td>
+    <img src={product.img} className="rounded-3 border" style={{width: '48px', height: '48px', objectFit: 'cover'}} />
+  </td>
+  <td>
+    <div className="d-flex flex-column">
+      <span className="fw-bold text-dark small">{product.name}</span>
+      <span className="text-muted" style={{fontSize: '0.7rem'}}>{product.sku}</span>
+    </div>
+  </td>
+  <td>
+    <span className="badge bg-warning-subtle text-dark border border-warning-subtle">
+      {product.category}
+    </span>
+  </td>
+  <td style={{ minWidth: '150px' }}>
+    <div className="d-flex align-items-center gap-2">
+      <small className={`fw-bold ${product.stock <= 10 ? 'text-danger' : 'text-dark'}`}>{product.stockLabel}</small>
+      <div className="progress flex-grow-1" style={{height: '6px'}}>
+        <div className={`progress-bar ${product.stock <= 10 ? 'bg-danger' : 'bg-success'}`} 
+             style={{width: product.barWidth}}></div>
+      </div>
+    </div>
+  </td>
+  <td className="fw-bold small">{product.price}</td>
+  <td className="text-end">
+    <button onClick={() => onEdit(product)} className="btn btn-sm btn-light border me-1"><IconEdit size={16}/></button>
+    <button onClick={() => onDelete(product.id)} className="btn btn-sm btn-outline-danger"><IconTrash size={16}/></button>
+  </td>
+</tr>
   );
 }
 
@@ -286,24 +273,20 @@ export default function InventarioPage() {
     <div className="p-8 max-w-[1600px] mx-auto">
 
       {/* ── Page Header ── */}
-      <div className="flex flex-wrap items-end justify-between mb-8 gap-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
         <div>
-          <h2 className="text-3xl font-extrabold text-zinc-900 tracking-tight" style={{ fontFamily: "Manrope, sans-serif" }}>
-            Inventory Management
-          </h2>
-          <p className="text-zinc-500 mt-1">Control and monitor your warehouse levels with industrial precision.</p>
+         <h2 className="fw-bold mb-1">Gestión de Inventario</h2>
+         <p className="text-muted small">Control y monitoreo de stock con precisión industrial.</p>
+      </div>
+      <div className="d-flex gap-2">
+         <button className="btn btn-white border shadow-sm d-flex align-items-center gap-2 small fw-bold">
+           <IconDownload size={18} /> EXPORTAR CSV
+         </button>
+         <button className="btn btn-orange shadow d-flex align-items-center gap-2 fw-bold">
+           <IconPlus size={18} /> AÑADIR PRODUCTO
+        </button>
         </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm font-semibold hover:bg-zinc-50 transition-colors shadow-sm">
-            <span className="material-symbols-outlined text-[18px]">file_download</span>
-            Export CSV
-              </button>
-              <button className="flex items-center gap-2 px-6 py-2.5 bg-orange-600 text-white rounded-lg text-sm font-bold hover:bg-orange-700 active:scale-[0.98] transition-all shadow-lg shadow-orange-600/10">
-                <span className="material-symbols-outlined">add</span>
-                Añadir Producto
-              </button>
-            </div>
-          </div>
+      </div>
 
           {/* ── Métricas ── */}
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
@@ -352,9 +335,9 @@ export default function InventarioPage() {
           </div>
 
           {/* ── Tabla ── */}
-          <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-zinc-200">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+          <div className="card card-stat border-0 shadow-sm overflow-hidden">
+              <div className="table-responsive">
+                   <table className="table table-hover mb-0">
                 <thead>
                   <tr className="bg-zinc-50">
                     {["Imagen", "Nombre del Producto", "Categoría", "Stock", "Precio", "Acciones"].map((col) => (
