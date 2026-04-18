@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+// Importación de tus páginas reales
+import InventarioPage from '../../pages/InventarioPage';
+import ProveedoresPage from '../../pages/ProveedoresPage';
+import OrdenesPage from '../../pages/OrdenesPage';
+import ClientesPage from '../../pages/ClientesPage';
+
 import { 
     IconLayoutDashboard, 
     IconBox, 
@@ -15,6 +21,7 @@ import {
     IconMenu2,
     IconX
 } from '@tabler/icons-react';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -26,7 +33,7 @@ import {
   PointElement,
   LineElement,
 } from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import './AdminStyle.css';
 
 // Registrar componentes de Chart.js
@@ -42,7 +49,6 @@ ChartJS.register(
 );
 
 export default function Administracion() {
-    const navigate = useNavigate();
     const location = useLocation();
     const [showSidebar, setShowSidebar] = useState(false);
 
@@ -109,14 +115,14 @@ export default function Administracion() {
                         </div>
                     </header>
 
-                    {/* DASHBOARD VIEW */}
+                    {/* VISTAS DINÁMICAS */}
                     <div className="p-3 p-md-5">
                         <Routes>
                             <Route path="/" element={<DashboardView />} />
-                            <Route path="/inventario" element={<Placeholder title="Inventario" />} />
-                            <Route path="/ordenes" element={<Placeholder title="Órdenes" />} />
-                            <Route path="/clientes" element={<Placeholder title="Clientes" />} />
-                            <Route path="/proveedores" element={<Placeholder title="Proveedores" />} />
+                            <Route path="/inventario" element={<InventarioPage />} />
+                            <Route path="/ordenes" element={<OrdenesPage />} />
+                            <Route path="/clientes" element={<ClientesPage />} />
+                            <Route path="/proveedores" element={<ProveedoresPage />} />
                         </Routes>
                     </div>
                 </main>
@@ -128,6 +134,7 @@ export default function Administracion() {
     );
 }
 
+// Componente para los ítems del menú
 function MenuItem({ to, label, icon, active }) {
     return (
         <Link to={to} className={"nav-link-industrial " + (active ? "active" : "")}>
@@ -136,8 +143,8 @@ function MenuItem({ to, label, icon, active }) {
     );
 }
 
+// Componente de la vista principal (Dashboard)
 function DashboardView() {
-    // Configuración de Chart.js para Rendimiento Semanal
     const barData = {
         labels: ['LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB', 'DOM'],
         datasets: [{
@@ -188,7 +195,6 @@ function DashboardView() {
                 </div>
             </div>
 
-            {/* TOP STAT CARDS */}
             <div className="row g-4 mb-5">
                 <StatCard title="VENTAS TOTALES (HOY)" value="$45,280.00" sub="↗ +12.5% vs ayer" subColor="text-danger" />
                 <StatCard title="PEDIDOS PENDIENTES" value="128" sub="🕒 24 en despacho" />
@@ -197,7 +203,6 @@ function DashboardView() {
             </div>
 
             <div className="row g-4 mb-5">
-                {/* WEEKLY PERFORMANCE CON CHART.JS */}
                 <div className="col-lg-8">
                     <div className="card card-stat">
                         <div className="d-flex justify-content-between align-items-center mb-4">
@@ -210,7 +215,6 @@ function DashboardView() {
                     </div>
                 </div>
 
-                {/* TODAY'S ORDERS */}
                 <div className="col-lg-4">
                     <div className="card card-stat">
                         <h5 className="fw-bold mb-4">Pedidos de Hoy</h5>
@@ -224,7 +228,6 @@ function DashboardView() {
                 </div>
             </div>
 
-            {/* INVENTORY ALERTS */}
             <div className="card card-stat">
                 <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
                     <h5 className="fw-bold mb-0">Alertas de Inventario</h5>
@@ -243,7 +246,7 @@ function DashboardView() {
                         </thead>
                         <tbody>
                             <AlertRow 
-                                img="/public/imagenes pagina ferreteria/Herramientas electricas/Taladro_percusion.jpg"
+                                img="/imagenes pagina ferreteria/Herramientas electricas/Taladro_percusion.jpg"
                                 name="Taladro Percutor 20V" 
                                 cat="Herramientas Eléctricas" 
                                 sku="HD-2049-X" 
@@ -252,7 +255,7 @@ function DashboardView() {
                                 badge="badge-critical"
                             />
                             <AlertRow 
-                                img="/public/imagenes pagina ferreteria/Ferreteria general/Tornilleria/Tornillo_rosca_maquina.webp"
+                                img="/imagenes pagina ferreteria/Ferreteria general/Tornilleria/Tornillo_rosca_maquina.webp"
                                 name="Tornillos de Acero 2\" 
                                 cat="Fijaciones" 
                                 sku="SC-5502-S" 
@@ -268,6 +271,7 @@ function DashboardView() {
     );
 }
 
+// Sub-componentes auxiliares
 function StatCard({ title, value, sub, subColor = "text-muted" }) {
     return (
         <div className="col-12 col-sm-6 col-xl-3">
@@ -313,8 +317,4 @@ function AlertRow({ img, name, cat, sku, stock, status, badge }) {
             <td><span className={"badge-status " + badge}>{status}</span></td>
         </tr>
     );
-}
-
-function Placeholder({ title }) {
-    return <div className="p-5 text-center bg-white rounded-4 shadow-sm"><h3>{title}</h3><p>Próximamente...</p></div>;
 }
